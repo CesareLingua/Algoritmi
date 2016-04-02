@@ -12,3 +12,4 @@ merge_sort_test.o: merge_sort.h merge_sort_test.c
 clean: 
 	rm -f *.o
 	rm -f merge_sort
+	rm -f Start
