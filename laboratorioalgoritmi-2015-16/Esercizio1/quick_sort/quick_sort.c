@@ -7,16 +7,6 @@ void swap(void** e1, void** e2) {
   *e2 = tmp;
 }	
 
-void quick_sort(void** array, int start, int end, CompareFunc compare) {
-  int p;
- 
-  if(start < end){
-    p = partition(array, start, end, compare);
-    quick_sort(array, start, p-1, compare);
-    quick_sort(array, p+1, end, compare);
-  }
-}
-
 int partition(void** array, int start, int end, CompareFunc compare){
   void* p;
   int i;
@@ -39,3 +29,14 @@ int partition(void** array, int start, int end, CompareFunc compare){
   swap(&array[start], &array[j]);
   return j;
 }
+
+void quick_sort(void** array, int start, int end, CompareFunc compare) {
+  int p;
+ 
+  if(start < end){
+    p = partition(array, start, end, compare);
+    quick_sort(array, start, p-1, compare);
+    quick_sort(array, p+1, end, compare);
+  }
+}
+

@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <assert.h>
 #include <string.h>
 #include <time.h>
 #include "quick_sort.h"
 
-int compare_long_int(void* ptr1, void* ptr2) {
+int compare_long_int(void* ptr1, void* ptr2){
   long int el1 = (long int) ptr1;
   long int el2 = (long int) ptr2;
 
   if(el1<el2) {
     return -1;
   }
-
   if (el1 == el2) {
     return 0;
   }
@@ -20,110 +20,115 @@ int compare_long_int(void* ptr1, void* ptr2) {
 }
 
 int compare_string(void* ptr1, void* ptr2){
-	char* el1 = (char*) ptr1;
-	char* el2 = (char*) ptr2;
-
-	return strcmp(el1, el2);
+	return strcmp((char*) ptr1, (char*) ptr2);
 }
 
 int compare_double(void* ptr1, void* ptr2){
-	//printf("primo: %f\nsecondo %f\n", *(float*)&ptr1, *(float*)&ptr2);
-
 	double el1 = *(double*) &ptr1;
 	double el2 = *(double*) &ptr2;
 
 	if(el1<el2) 
 	  return -1;
-
 	if (el1 == el2)
 	    return 0;
 
 	return 1;
 }
 
-void test_quick_sort_on_null_array() {
+void test_quick_sort_on_null_array(){
   int* array = NULL;
   quick_sort((void**) array, 0, 0, compare_long_int );
 
   assert(1);
-  printf("test_quick_sort_on_null_array: OK\n");
 }
 
-void test_quick_sort_on_full_array_long(long int* array, int n_records) {
-  //long int array[7] = { 11, 4, 1, -8, 10, 9, 15};
+void test_quick_sort_on_full_array_long(){
+  long int array[7] = { 11, 4, 1, -8, 10, 9, 15};
   int i;
-  time_t m;
-  time_t now = time(NULL);
-
-  quick_sort((void**) array, 0, n_records -1 , compare_long_int);
-  m = difftime(time(NULL), now);
-
-  for(i=0; i<n_records-1; ++i)
+  
+  quick_sort((void**) array,0, 6, compare_long_int);
+  
+  for(i=0; i<6; ++i)
     assert(array[i] <= array[i+1]);
-
-  printf("\ntest_quick_sort_on_full_array_long: OK\n");
-  printf("	tempo ordinamento : %ld\n", m);
 }
 
 void test_quick_sort_on_equals_array(){
 	long int array[6] = {5,5,5,5,5,5};
 	int i;
 
-	quick_sort((void**) array, 0, 6, compare_long_int);
+	quick_sort((void**) array, 0, 5, compare_long_int);
 
 	for(i = 0; i<5; ++i)
 		assert(array[i] <= array[i+1]);
-
-	printf("test_quick_sort_on_equals_array: OK\n");	
 }
 
-void test_quick_sort_on_full_array_double(double* array, int n_records){
-	//double array[5] = {1.263, 5.753, 0.5325, -3.0043, 2.8486};
+void test_quick_sort_on_full_array_double(){
+	double array[5] = {1.263, 5.753, 0.5325, -3.0043, 2.8486};
 	int i;
-	time_t m;
-  	time_t now = time(NULL);
 
-	quick_sort((void**) array, 0, n_records-1, compare_double);
+	quick_sort((void**) array, 0, 4, compare_double);
 
-	m = difftime(time(NULL), now);
-	for(i = 0; i<n_records-1; ++i)
+	for(i = 0; i<4; ++i)
 		assert(array[i] <= array[i+1]);	
-
-	printf("test_quick_sort_on_full_array_double: OK\n");
-	printf("	tempo ordinamento : %ld\n", m);
 }
 
-void test_quick_sort_on_char_array(char** array, int n_records){
-	//char** array;
+void test_quick_sort_on_full_char_array(){
+	char** array;
 	int i;
-	/*array = (char**)malloc(sizeof(char**)*4);
+
+	array = (char**)malloc(sizeof(char**)*4);
 	for(i = 0; i <4; ++i){
 		array[i] = (char*)malloc(sizeof(char*)*6); 
 	}
-	array[0] = "Cesare";
-	array[1] = "Lingua";
-	array[2] = "Elena";
-	array[3] = "Famlin";*/
 
-	/*for(i = 0; i<4; ++i){
-		printf("%s\n", array[i] );
-	}*/
-	time_t m;
-  	time_t now = time(NULL);
+	array[0] = "array";
+	array[1] = "Stack";
+	array[2] = ".heap";
+	array[3] = "voId";
 
-	quick_sort((void**) array, 0, n_records-1, compare_string);
+	quick_sort((void**) array, 0, 3, compare_string);
 
-	m = difftime(time(NULL), now);
+	for(i = 0; i<3; ++i)
+		assert(strcmp(array[i], array[i+1]) < 0);
 
-	for(i = 0; i<n_records-1; ++i)
-		assert(strcmp(array[i], array[i+1]) <= 0);
+	free(array);
+}
 
-	printf("test_quick_sort_on_full_array_CHAR: OK\n");
-	printf("	tempo ordinamento : %ld\n", m);
-	/*for(i = 0; i<4; ++i){
-		free(array[i]);
+void test_quick_sort_on_sorted_array(){
+	long int array[8] = {-8, -2, 0, 7, 45, 89, 90, 178};
+	int i;
+
+	quick_sort((void**)array, 0, 7, compare_long_int);
+
+	for(i = 0; i<7; ++i)
+		assert(array[i] <= array[i+1]);	
+
+}
+
+void test_quick_sort_on_not_increasing_sorted_array(){
+	double array[6] =  {87, 4, 1, 0, -8, -77};
+	int i;
+
+	quick_sort((void**)array, 0, 5, compare_double);
+
+	for(i = 0; i < 5; ++i)
+		assert(array[i] <= array[i+1]);
+}
+
+int count_records(){
+	int n_records;
+	char c;
+	FILE* fp;
+	if((fp = fopen("records.csv", "r")) == NULL) 
+		perror("Non sono rouscito ad aprire il file (records.csv)\n");
+
+	while(!feof(fp)){
+		c = fgetc(fp);
+		if(c == '\n')
+			n_records++;
 	}
-	free(array);*/
+	fclose(fp);
+	return n_records;
 }
 
 void fill_array (char** s, long int* l, double* d, int n_records){
@@ -134,7 +139,6 @@ void fill_array (char** s, long int* l, double* d, int n_records){
 	fp = fopen("records.csv", "r");
 	c = fgetc(fp);
 	for(i = 0; i < n_records; ++i){
-
 		for(j = 0; c != ','; ++j){
 			c = fgetc(fp);
 		}
@@ -159,30 +163,34 @@ void fill_array (char** s, long int* l, double* d, int n_records){
 		}
 		d[i] = strtod((char*)tmp	,NULL);
 	}
+	fclose(fp);
 }
 
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[]){
 
- 
-  //Conto numero elementi
-  //char c[100];
   int n_records, i;
-  time_t m;
-  time_t now;
-  /*FILE* fp = fopen("records.csv", "r"); 
-  while(fgets(c, 100, fp) != NULL){
-  	n_records++;
-  }
-	
-  printf("Numero di righe del file records.csv = %d\n", n_records);*/
-  n_records = 20000000; 
-  //Inizioalizzo gli array
-  char** array_string;
-  long int* array_long_int;
-  double* array_double;
-  
+  time_t m, now;
 
+  char** array_string = NULL;
+  long int* array_long_int = NULL;
+  double* array_double  = NULL;
+
+  test_quick_sort_on_null_array();
+  test_quick_sort_on_full_array_long();
+  test_quick_sort_on_full_array_double();
+  test_quick_sort_on_full_char_array();
+  test_quick_sort_on_equals_array();
+  test_quick_sort_on_sorted_array();
+  test_quick_sort_on_not_increasing_sorted_array();
+
+  printf("Conto il numero di righe...\n");
+  now = time(NULL);
+  n_records = count_records();
+  m = difftime(time(NULL), now); 
+  printf("	-Numero righe: %d\n", n_records );
+  printf("	-Tempo impiegato = %ldsec\n", m);
+  
   array_string = (char**)malloc(sizeof(char**)*n_records);
   array_long_int = (long int*) malloc(sizeof(long int*)*n_records);
   array_double = (double*) malloc(sizeof(double*)*n_records);
@@ -190,22 +198,24 @@ int main(int argc, char const *argv[]) {
   for(i = 0; i < n_records; ++i){
   	array_string[i] = (char*) malloc(sizeof(char*)*10);
   }
+  
+  printf("\nLeggo %d di records...\n",n_records);
 	now = time(NULL);
   fill_array(array_string, array_long_int, array_double, n_records);
   m = difftime(time(NULL), now);
-  printf("Tempo lettura da file = %ld\n",m);
-/*
- * Unit test su:
- * array nullo, con elementi casuali e tutti uguali
- */
-  //test_quick_sort_on_null_array();
-  //test_quick_sort_on_full_array_long(array_long_int, n_records);
-  //test_quick_sort_on_equals_array();
-  test_quick_sort_on_full_array_double(array_double, n_records);
-  //test_quick_sort_on_char_array(array_string, n_records);
+  printf("	-Tempo impiegato = %ldsec\n",m);
+
+  printf("\nInizio ad ordinare...\n");
+  now = time(NULL);
+  //quick_sort((void**)array_string, 0, n_records-1, compare_string);
+  quick_sort((void**)array_long_int, 0, n_records-1, compare_long_int);
+  //quick_sort((void**)array_double, 0, n_records-1, compare_double);
+  m = difftime(time(NULL), now);
+  printf("	-Tempo impiegato = %ldsec\n", m);
 
   free(array_long_int);
   free(array_double);
   free(array_string);
+
   return 0;
 }	

@@ -11,5 +11,4 @@ typedef int (*CompareFunc)(void*, void*);
  */
 void quick_sort(void** array, int start, int end, CompareFunc compare);
 
-int partition(void** array, int start, int end, CompareFunc compare);
 #endif
