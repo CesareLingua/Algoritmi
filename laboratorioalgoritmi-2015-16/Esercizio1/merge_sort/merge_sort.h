@@ -9,6 +9,6 @@ typedef int (*CompareFunc)(void*, void*);
  * left: primo elemento dell'array
  * right: ultimo elemento dell'array
  */
-void merge_sort(void** array, int n, CompareFunc compare);
+void merge_sort(void** array, int left, int right, CompareFunc compare);
 
 #endif
