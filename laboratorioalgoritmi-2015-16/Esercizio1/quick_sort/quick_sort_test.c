@@ -120,7 +120,7 @@ int count_records(){
 	char c;
 	FILE* fp;
 	if((fp = fopen("records.csv", "r")) == NULL) 
-		perror("Non sono rouscito ad aprire il file (records.csv)\n");
+		perror("Non sono riuscito ad aprire il file (records.csv)\n");
 
 	while(!feof(fp)){
 		c = fgetc(fp);
