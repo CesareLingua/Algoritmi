@@ -5,7 +5,7 @@ void swap(void** e1, void** e2) {
   void* tmp = *e1;
   *e1 = *e2;
   *e2 = tmp;
-}	
+}	 
 
 int partition(void** array, int start, int end, CompareFunc compare){
   void* p;
