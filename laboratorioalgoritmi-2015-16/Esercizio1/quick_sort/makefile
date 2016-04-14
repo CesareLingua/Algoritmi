@@ -12,3 +12,4 @@ quick_sort_test.o: quick_sort.h quick_sort_test.c
 clean: 
 	rm -f *.o
 	rm -f quick_sort
+	rm -f Start

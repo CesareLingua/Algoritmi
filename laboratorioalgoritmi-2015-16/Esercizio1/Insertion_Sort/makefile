@@ -12,3 +12,4 @@ insertion_sort_test.o: insertion_sort.h insertion_sort_test.c
 clean: 
 	rm -f *.o
 	rm -f insertion_sort
+	rm -f Start

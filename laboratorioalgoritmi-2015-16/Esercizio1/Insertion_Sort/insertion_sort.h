@@ -1,6 +1,8 @@
 #ifndef __INSERTION_SORT_H_KEIXJ4PDU3__
 #define __INSERTION_SORT_H_KEIXJ4PDU3__
 
+#define N_RECORDS 20000000
+
 typedef int (*CompareFunc)(void*, void*);
 
 /*

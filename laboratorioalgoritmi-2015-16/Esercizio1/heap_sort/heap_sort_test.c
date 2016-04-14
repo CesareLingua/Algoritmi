@@ -23,9 +23,9 @@ int compare_string(void* ptr1, void* ptr2){
 	return strcmp((char*) ptr1, (char*) ptr2);
 }
 
-int compare_float(void* ptr1, void* ptr2){
-	float el1 = *(float*) &ptr1;
-	float el2 = *(float*) &ptr2;
+int compare_double(void* ptr1, void* ptr2){
+	double el1 = *(double*) &ptr1;
+	double el2 = *(double*) &ptr2;
 
 	if(el1<el2) 
 	  return -1;
@@ -48,7 +48,7 @@ void test_heap_sort_on_full_array_long(){
   
   heap_sort((void**) array, 7, compare_long_int);
   
-  for(i = 0; i < 6; ++i)
+  for(i=0; i<6; ++i)
     assert(array[i] <= array[i+1]);
 }
 
@@ -58,17 +58,17 @@ void test_heap_sort_on_equals_array(){
 
 	heap_sort((void**) array, 6, compare_long_int);
 
-	for(i = 0; i < 5; ++i)
+	for(i = 0; i<5; ++i)
 		assert(array[i] <= array[i+1]);
 }
 
-void test_heap_sort_on_full_array_float(){
-	float array[5] = {1.263, 5.753, 0.5325, -3.0043, 2.8486};
+void test_heap_sort_on_full_array_double(){
+	double array[5] = {1.263, 5.753, 0.5325, -3.0043, 2.8486};
 	int i;
 
-	heap_sort((void**) array, 5, compare_float);
+	heap_sort((void**) array, 5, compare_double);
 
-	for(i = 0; i < 4; ++i)
+	for(i = 0; i<4; ++i)
 		assert(array[i] <= array[i+1]);	
 }
 
@@ -88,7 +88,7 @@ void test_heap_sort_on_full_char_array(){
 
 	heap_sort((void**) array, 4, compare_string);
 
-	for(i = 0; i < 3; ++i)
+	for(i = 0; i<3; ++i)
 		assert(strcmp(array[i], array[i+1]) < 0);
 
 	free(array);
@@ -106,39 +106,23 @@ void test_heap_sort_on_sorted_array(){
 }
 
 void test_heap_sort_on_not_increasing_sorted_array(){
-	float array[6] =  {87, 4, 1, 0, -8, -77};
+	double array[6] =  {87, 4, 1, 0, -8, -77};
 	int i;
 
-	heap_sort((void**)array, 6, compare_float);
+	heap_sort((void**)array, 6, compare_double);
 
 	for(i = 0; i < 5; ++i)
 		assert(array[i] <= array[i+1]);
 }
 
-int count_records(){
-	int n_records;
-	char c;
-	FILE* fp;
-	if((fp = fopen("records.csv", "r")) == NULL) 
-		perror("Non sono riuscito ad aprire il file (records.csv)\n");
-
-	while(!feof(fp)){
-		c = fgetc(fp);
-		if(c == '\n')
-			n_records++;
-	}
-	fclose(fp);
-	return n_records;
-}
-
-void fill_array (char** s, long int* l, float* d, int n_records){
+void fill_array (char** s, long int* l, double* d){
 	int i, j;
 	char c;
 	char tmp[20];
 	FILE* fp;
 	fp = fopen("records.csv", "r");
 	c = fgetc(fp);
-	for(i = 0; i < n_records; ++i){
+	for(i = 0; i < N_RECORDS; ++i){
 		for(j = 0; c != ','; ++j){
 			c = fgetc(fp);
 		}
@@ -169,53 +153,72 @@ void fill_array (char** s, long int* l, float* d, int n_records){
 
 int main(int argc, char const *argv[]){
 
-  int n_records, i;
-  time_t m, now;
+  int i;
+  clock_t inizio, fine;
+  double tempo;
+  char tipo;
 
   char** array_string = NULL;
   long int* array_long_int = NULL;
-  float* array_float  = NULL;
+  double* array_double  = NULL;
 
   test_heap_sort_on_null_array();
   test_heap_sort_on_full_array_long();
-  test_heap_sort_on_full_array_float();
+  test_heap_sort_on_full_array_double();
   test_heap_sort_on_full_char_array();
   test_heap_sort_on_equals_array();
   test_heap_sort_on_sorted_array();
   test_heap_sort_on_not_increasing_sorted_array();
-
-  printf("Conto il numero di righe...\n");
-  now = time(NULL);
-  //n_records = count_records();
-  n_records = 20000000;
-  m = difftime(time(NULL), now); 
-  printf("	-Numero righe: %d\n", n_records );
-  printf("	-Tempo impiegato = %ldsec\n", m);
   
-  array_string = (char**)malloc(sizeof(char**)*n_records);
-  array_long_int = (long int*) malloc(sizeof(long int*)*n_records);
-  array_float = (float*) malloc(sizeof(float*)*n_records);
+  array_string = (char**)malloc(sizeof(char**)*N_RECORDS);
+  array_long_int = (long int*) malloc(sizeof(long int*)*N_RECORDS);
+  array_double = (double*) malloc(sizeof(double*)*N_RECORDS);
 
-  for(i = 0; i < n_records; ++i){
+  for(i = 0; i < N_RECORDS; ++i){
   	array_string[i] = (char*) malloc(sizeof(char*)*10);
   }
   
-  printf("\nLeggo %d di records...\n",n_records);
-	now = time(NULL);
-  fill_array(array_string, array_long_int, array_float, n_records);
-  m = difftime(time(NULL), now);
-  printf("	-Tempo impiegato = %ldsec\n",m);
+  printf("-----------------------\n");
+  printf("Leggo i records...\n");
+	inizio = clock();
+  fill_array(array_string, array_long_int, array_double);
+  fine = clock();
+  tempo = (double) (fine - inizio)/CLOCKS_PER_SEC;
+  printf("Tempo impiegato = %lfsec\n",tempo);
+  printf("-----------------------\n\n");
 
-  printf("\nInizio ad ordinare...\n");
-  now = time(NULL);
-  heap_sort((void**)array_string, n_records, compare_string);
-  //heap_sort((void**)array_long_int, n_records, compare_long_int);
-  //heap_sort((void**)array_float, n_records, compare_float);
-  m = difftime(time(NULL), now);
-  printf("	-Tempo impiegato = %ldsec\n", m);
+  printf("-----------------------\n");
+  printf("Per ordinare long int: 1\n");
+  printf("Per ordinare float  : 2\n");
+  printf("Per ordinare le stringhe : 3\n");
+  printf("-----------------------\n\n");
+  printf("Cosa ordino? ");
 
+  scanf("%c", &tipo);
+  inizio = clock();
+  switch(tipo){
+  	case '1':
+  		printf("Ordino i long int\n");
+  		heap_sort((void**)array_long_int, N_RECORDS, compare_long_int);
+  		break;
+
+  	case '2':
+  		printf("Ordino i float\n");
+  		heap_sort((void**)array_double, N_RECORDS, compare_double);
+  		break;
+
+  	case '3':
+  		printf("Ordino le stringhe\n");
+  		heap_sort((void**)array_string, N_RECORDS, compare_string);
+  		break;
+  }
+  fine = clock();
+  tempo = (double) (fine-inizio)/CLOCKS_PER_SEC;
+  printf("Tempo impiegato: %lfsec\n",tempo);
+  printf("-----------------------\n\n");
+  
   free(array_long_int);
-  free(array_float);
+  free(array_double);
   free(array_string);
 
   return 0;

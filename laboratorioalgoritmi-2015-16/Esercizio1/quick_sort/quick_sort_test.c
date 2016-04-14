@@ -188,9 +188,9 @@ int main(int argc, char const *argv[]){
   printf("-----------------------\n\n");
 
   printf("-----------------------\n");
-  printf("Per ordinare Integer: 1\n");
-  printf("Per ordinare Float  : 2\n");
-  printf("Per ordinare String : 3\n");
+  printf("Per ordinare long int: 1\n");
+  printf("Per ordinare float  : 2\n");
+  printf("Per ordinare le stringhe : 3\n");
   printf("-----------------------\n\n");
   printf("Cosa ordino? ");
 
@@ -198,17 +198,17 @@ int main(int argc, char const *argv[]){
   inizio = clock();
   switch(tipo){
   	case '1':
-  		printf("i long int\n");
+  		printf("Ordino i long int\n");
   		quick_sort((void**)array_long_int, 0, N_RECORDS-1, compare_long_int);
   		break;
 
   	case '2':
-  		printf("i float\n");
+  		printf("Ordino i float\n");
   		quick_sort((void**)array_double, 0, N_RECORDS-1, compare_double);
   		break;
 
   	case '3':
-  		printf("le stringhe\n");
+  		printf("Ordino le stringhe\n");
   		quick_sort((void**)array_string, 0, N_RECORDS-1, compare_string);
   		break;
   }
