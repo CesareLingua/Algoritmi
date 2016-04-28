@@ -1,28 +1,37 @@
-//#include "binary_search_tree.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "binary_search_tree.h"
 
-typedef struct key{
-	long int a;
-	double b;
-	char* c;
-	int id;
-}key;
+int main(int argc, char *argv[]){	
+	bin_tree* tree;
+	clock_t start, end; 
+	double t;
 
-typedef struct node{
-	key* data;
-	struct node* left;
-	struct node* right;
-	struct node* parent;
-}node;
+	if(strcmp(argv[1], "--help") == 0){
+		print_help();
+	}
 
-int main(){
-	node* root;
-	root = (node*)malloc(sizeof(node));
-	root->data = (key*)malloc(sizeof(key));
+	//unit_test()
 
-	(root->data)->a = 2;
+	tree = new_bin_tree();
+ 	
+	start = clock();
+	fill(tree, argv[1]);
+	end = clock();
+	t = (double) (end-start)/CLOCKS_PER_SEC;
+	printf("\nTempo totale di inserimento di %d di records: %lf sec\n", N_RECORDS, t);
+  
+	start = clock();
+	search(tree, argv[1]);
+	end = clock();
+	t = (double) (end-start)/CLOCKS_PER_SEC;
+	printf("Tempo totale di ricerca di %d records: %lf sec\n", N_OPER, t);
 
-	printf("%li\n", (root->data)->a);
+	start = clock();
+	delete(tree, argv[1]);
+	end = clock();
+	t = (double) (end-start)/CLOCKS_PER_SEC;
+	printf("Tempo totale di cancellazione di %d records: %lf sec\n\n", N_OPER, t);
+
+	free(tree);
+	
 	return 0;
 }
