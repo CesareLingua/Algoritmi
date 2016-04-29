@@ -31,15 +31,15 @@ int compare_double(node* root, node* n){
 
 void print_help(){
 	printf("\nUSAGE: $./stress_bin_tree [options]\n");
-	printf("		-s 						Fill the tree by String\n");	
-	printf("		-i 						Fill the tree by long int\n");
-	printf("		-f 						Fill the tree by float\n");
+	printf("		-s 			Fill the tree by String\n");	
+	printf("		-i 			Fill the tree by long int\n");
+	printf("		-f 			Fill the tree by float\n");
 	printf("\n");	
 	exit(EXIT_SUCCESS);
 }
 
 key* new_key(int id, char* w, long int i, double f){
-	key* k = (key*) malloc(sizeof(node));
+	key* k = (key*) malloc(sizeof(key));
 	k->linum = i;
 	k->fnum = f;
 	k->word = w;
@@ -47,7 +47,7 @@ key* new_key(int id, char* w, long int i, double f){
 	return k;
 }
 
-node* new_node(key* k, node* l, node* r){
+node* new_node(key* k){
 	node* n = (node*) malloc(sizeof(node));
 	n->record = k;
 	n->left = NULL;
@@ -66,11 +66,11 @@ key* read_record(FILE* fp){
 	long int linum;
 	double fnum;
 	char* word;
-	word = (char*)malloc(sizeof(char)*10);
+	word = (char*)malloc(sizeof(char)*15);
 	char c;
 	
 	if(fscanf(fp, "%d,", &id) <= 0)
-		perror("Not id read\n");
+		perror("No id read\n");
 
 	c = fgetc(fp);
 	for(i = 0; c != ','; i++){
@@ -111,8 +111,7 @@ void fill(bin_tree* tree, char* argv){
 	
 	for(i = 0; i < N_RECORDS; i++){
 		k = read_record(fp);
-		n = new_node(k, NULL, NULL);
-
+		n = new_node(k);
 		if(strcmp(argv, "-s") == 0){
 			tree->root = binary_search_tree_insert(tree->root, n, compare_string);
 		}else if(strcmp(argv, "-i") == 0){
@@ -132,8 +131,7 @@ void fill(bin_tree* tree, char* argv){
 
 int random_generator(){
 	int rnd;
-	srand(time(NULL));
-	rnd = rand()%N_RECORDS+1;
+	rnd = rand()%N_RECORDS;
 	return rnd;
 }
 
@@ -167,10 +165,9 @@ void search_1ml_records(node* root, CompareFunc compare){
 	node* n;
 	key* k;
 	for(i = 0; i < N_OPER; i++){
-		//sleep(1);
 		rnd = random_generator();
 		k = search_id(rnd);
-		n = new_node(k, NULL, NULL);
+		n = new_node(k);
 		assert(random_search(root, n, compare) > 0);
 		free(k);
 		free(n);
@@ -201,31 +198,31 @@ node* min_node_value(node* n){
 
 }
 
-int random_delete(node* root, node* n, CompareFunc compare){
+node* random_delete(node* root, node* n, CompareFunc compare){
 	if(root == NULL)
-		return -1;
+		return root;
 	if(compare(root, n) > 0)
-		random_delete(root->left, n, compare);
+		root->left = random_delete(root->left, n, compare);
 	else if(compare(root, n) < 0)
-		random_delete(root->right, n, compare);
+		root->right = random_delete(root->right, n, compare);
 	else{
 		if(root->right == NULL){
-			root = root->left;
-			return 1; 
+			node* tmp = root->left;
+			free(root);
+			return tmp;			
 		}else if(root->left == NULL){
-			root = root->right;
-			return 1;
+			node* tmp = root->right;
+			free(root);
+			return tmp;
 		}else{
 			node* tmp = min_node_value(root->right);
 
 			root->record = tmp->record;
 
-			random_delete(root->right, tmp, compare);
-
+			root->right = random_delete(root->right, tmp, compare);
 		}
 	}
-	return 1;
-
+	return root;
 }
 
 void delete_1ml_records(node* root, CompareFunc compare){
@@ -235,8 +232,8 @@ void delete_1ml_records(node* root, CompareFunc compare){
 	for(i = 0; i < N_OPER; i++){
 		rnd = random_generator();
 		k = search_id(rnd);
-		n = new_node(k, NULL, NULL);
-		assert(random_delete(root, n, compare) > 0);
+		n = new_node(k);
+		random_delete(root, n, compare);
 		free(k);
 		free(n);
 	}

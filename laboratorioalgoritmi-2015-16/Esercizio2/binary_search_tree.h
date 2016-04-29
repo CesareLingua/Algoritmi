@@ -1,7 +1,7 @@
 #ifndef __BINARY_SEARCH_TREE_H_KEIXJ4PDU3__
 #define __BINARY_SEARCH_TREE_H_KEIXJ4PDU3__
 
-#define N_RECORDS 20000
+#define N_RECORDS 200
 #define N_OPER 30
 
 #include <stdio.h>
@@ -22,7 +22,6 @@ typedef struct tnode{
 	key* record;
 	struct tnode* left;
 	struct tnode* right;
-	struct tnode* parent;
 }node;
 
 typedef struct bin_tree_frame {
@@ -37,7 +36,7 @@ key* new_key(int id, char* w, long int i, double f);
 /*
  * Crea un nuovo nodo
  */
-node* new_node(key* k, node* l, node* r);
+node* new_node(key* k);
 
 /*
  * Legge un record, crea una chiave con i valori letti e restituisce un puntatore a key
@@ -73,7 +72,9 @@ void print_help();
 void search(bin_tree* tree, char* argv);
 node* min_node_value(node* n);
 void delete_1ml_records(node* root, CompareFunc compare);
-int random_delete(node* root, node* n, CompareFunc compare);
+node* random_delete(node* root, node* n, CompareFunc compare);
 void delete(bin_tree* tree, char* argv);
+
+void unit_test();
 
 #endif
