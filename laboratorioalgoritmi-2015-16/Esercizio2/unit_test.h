@@ -5,7 +5,10 @@
 	//void test_empty_insert();
 	void test_full_insert();
 	void delete_min();
-	void delete_root();
+	node* delete_root();
+	int is_leaf();
+	void delete_all_leaves();
+	void inorder_print();
 
 
 

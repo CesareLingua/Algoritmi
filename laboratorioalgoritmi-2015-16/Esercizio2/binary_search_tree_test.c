@@ -5,7 +5,7 @@ int main(int argc, char *argv[]){
 	node* min;
 	clock_t start, end; 
 	double t;
-
+	srand((int)clock());
 	if(strcmp(argv[1], "--help") == 0){
 		print_help();
 	}
