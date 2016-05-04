@@ -1,4 +1,5 @@
 #include "binary_search_tree.h"
+#include "unit_test.h"
 
 int compare_long_int(node* root, node* n){
   long int el1 = root->record->linum;
@@ -31,9 +32,9 @@ int compare_double(node* root, node* n){
 
 void print_help(){
 	printf("\nUSAGE: $./stress_bin_tree [options]\n");
-	printf("		-s 			Fill the tree by String\n");	
-	printf("		-i 			Fill the tree by long int\n");
-	printf("		-f 			Fill the tree by float\n");
+	printf("		-s           Fill the tree by String\n");	
+	printf("		-i           Fill the tree by long int\n");
+	printf("		-f           Fill the tree by float\n");
 	printf("\n");	
 	exit(EXIT_SUCCESS);
 }
@@ -114,10 +115,13 @@ void fill(bin_tree* tree, char* argv){
 		n = new_node(k);
 		if(strcmp(argv, "-s") == 0){
 			tree->root = binary_search_tree_insert(tree->root, n, compare_string);
+			assert(is_bst(tree->root, compare_string) > 0);
 		}else if(strcmp(argv, "-i") == 0){
 			tree->root = binary_search_tree_insert(tree->root, n, compare_long_int);
+			assert(is_bst(tree->root, compare_long_int) > 0);
 		}else if(strcmp(argv, "-f") == 0)	{		
 			tree->root = binary_search_tree_insert(tree->root, n, compare_double);
+			assert(is_bst(tree->root, compare_double) > 0);
 		}else{
 			printf("ERROR: incorrect options\n");
 			exit(EXIT_FAILURE);
@@ -168,7 +172,7 @@ void search_1ml_records(node* root, CompareFunc compare){
 		rnd = random_generator();
 		k = search_id(rnd);
 		n = new_node(k);
-		assert(random_search(root, n, compare) > 0);
+		assert(random_search(root, n, compare) == 1);
 		free(k);
 		free(n);
 	}
@@ -223,6 +227,7 @@ node* random_delete(node* root, node* n, CompareFunc compare){
 		}
 	}
 	return root;
+
 }
 
 void delete_1ml_records(node* root, CompareFunc compare){
