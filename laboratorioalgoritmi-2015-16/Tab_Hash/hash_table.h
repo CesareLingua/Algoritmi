@@ -1,8 +1,9 @@
 #ifndef __HASH_TABLE_H_KEIXJ4PDU3__
 #define __HASH_TABLE_H_KEIXJ4PDU3__
 
-#define N_RECORDS 200
-#define HSIZE 50/* dimensione della tabella hash */
+#define N_RECORDS 20000000
+#define HSIZE 5000000
+#define N_OPER 1000000
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,16 +36,20 @@ void print_help();
 int compare_long_int(key* k1, key* k2);
 int compare_string(key* k1, key* k2);
 int compare_double(key* k1, key* k2);
-node* insert_list(node* n, key* k);
-node* find_list(node* n, key* k, CompareFunc compare);
-int hash(int id);
-void insert_hash_table(node** hash_table, key* k, CompareFunc compare);
 key* new_key(int id, char* w, long int i, double f);
 node* new_node(key* k);
-key* read_record(FILE* fp);
-void insert_file_records(node** hash_table, char* argv);
 node** make_table();
-void free_mem();
+int hash(int id);
 
+key* read_record(FILE* fp);
+node* insert_list(node* n, key* k);
+int find_list(node* n, key* k, CompareFunc compare);
+void insert_hash_table(node** hash_table, key* k, CompareFunc compare);
+void insert_file_records(node** hash_table, char* argv);
+
+int random_generator();
+void search_id(key** k);
+double search_key(node** hash_table, char* argv);
+void search(node** hash_table, key* k, CompareFunc compare);
 
 #endif

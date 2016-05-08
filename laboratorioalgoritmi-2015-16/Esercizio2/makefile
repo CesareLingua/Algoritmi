@@ -14,7 +14,4 @@ unit_test.o: unit_test.h binary_search_tree.h unit_test.c
 
 clean: 
 	rm -f *.o
-	rm -f binary_search_tree
-	rm -f binary_tree_method
-	rm -f unit_test
 	rm -f stress_bin_tree

@@ -1,8 +1,8 @@
 #ifndef __BINARY_SEARCH_TREE_H_KEIXJ4PDU3__
 #define __BINARY_SEARCH_TREE_H_KEIXJ4PDU3__
 
-#define N_RECORDS 20000
-#define N_OPER 300
+#define N_RECORDS 20000000
+#define N_OPER 1000000
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,7 +78,7 @@ int random_generator();
  * Dato un intero compreso tra 1 e N_OPER restiusce il record corrispondente 
  * letto da "records.csv"
  */
-key* search_id(int rnd);
+void search_id(key** k);
 
 /*
  * Metodi di ricerca in base al tipo scelto

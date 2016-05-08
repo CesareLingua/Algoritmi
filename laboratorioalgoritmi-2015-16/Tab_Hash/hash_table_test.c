@@ -18,13 +18,12 @@ int main(int argc, char* argv[]){
 	insert_file_records(hash_table, argv[1]);
 	end = clock();
 	t = (double) (end - start)/ CLOCKS_PER_SEC;
-	printf("\nTempo totale di INSERIMENTO di %d di records: %lf sec\n", N_RECORDS, t);
+	printf("\nTempo totale di INSERIMENTO di %d di records: %lf sec\n\n", N_RECORDS, t);
 
-	/*start = clock();
-	//METONOD DI RICERCA
-	end = clock();
-	t = (double) (end - start)/ CLOCKS_PER_SEC;
-	printf("\nTempo totale di RICERCA di %d di records: %lf sec\n", N_RECORDS, t);*/
+	//print_table(hash_table, argv[1]);
+
+	t = search_key(hash_table, argv[1]);
+	printf("Tempo totale netto di RICERCA di %d di records: %lf sec\n", N_OPER, t);
 
 	/*start = clock();
 	//METODO DI CANCELLAZIONE
@@ -32,7 +31,6 @@ int main(int argc, char* argv[]){
 	t = (double) (end - start)/ CLOCKS_PER_SEC;
 	printf("\nTempo totale di CANCELLAZIONE di %d di records: %lf sec\n", N_RECORDS, t);*/
 
-	print_table(hash_table, argv[1]);
 
 	free(hash_table);
 }

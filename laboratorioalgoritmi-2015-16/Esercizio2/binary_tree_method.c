@@ -63,25 +63,29 @@ bin_tree* new_bin_tree (){
 }
 
 key* read_record(FILE* fp){
-	int i, id;
-	long int linum;
-	double fnum;
-	char* word;
-	word = (char*)malloc(sizeof(char)*15);
-	char c;
-	
-	if(fscanf(fp, "%d,", &id) <= 0)
-		perror("No id read\n");
+  int i; 
+  int id = 0;
+  long int linum = 0;
+  double fnum = 0;
+  char* word = NULL;
+  word = (char*)malloc(sizeof(char)*15);
 
-	c = fgetc(fp);
-	for(i = 0; c != ','; i++){
-		word[i] = c;
-		c = fgetc(fp);
-	}
-	if(fscanf(fp, "%li,%lf", &linum, &fnum) <= 0)
-		perror("No number read\n");
+  char c = '\0';
+  if(fscanf(fp, "%d,", &id) <= 0)
+    perror("No id read\n");
+  c = fgetc(fp);
+  for(i = 0; i <15; i++){
+  	word[i] = '\0';
+  	if(c != ','){
+    	word[i] = c;
+    	c = fgetc(fp);
+  	}
+    
+  }
+  if(fscanf(fp, "%li,%lf", &linum, &fnum) <= 0)
+    perror("No number read\n");
+
 	return new_key(id, word, linum, fnum);
-
 }
 
 node* binary_search_tree_insert(node* root, node* n, CompareFunc compare ){
@@ -115,13 +119,13 @@ void fill(bin_tree* tree, char* argv){
 		n = new_node(k);
 		if(strcmp(argv, "-s") == 0){
 			tree->root = binary_search_tree_insert(tree->root, n, compare_string);
-			assert(is_bst(tree->root, compare_string) > 0);
+			//assert(is_bst(tree->root, compare_string) > 0);
 		}else if(strcmp(argv, "-i") == 0){
 			tree->root = binary_search_tree_insert(tree->root, n, compare_long_int);
-			assert(is_bst(tree->root, compare_long_int) > 0);
+			//assert(is_bst(tree->root, compare_long_int) > 0);
 		}else if(strcmp(argv, "-f") == 0)	{		
 			tree->root = binary_search_tree_insert(tree->root, n, compare_double);
-			assert(is_bst(tree->root, compare_double) > 0);
+			//assert(is_bst(tree->root, compare_double) > 0);
 		}else{
 			printf("ERROR: incorrect options\n");
 			exit(EXIT_FAILURE);
@@ -134,23 +138,31 @@ void fill(bin_tree* tree, char* argv){
 
 
 int random_generator(){
-	int rnd;
-	rnd = rand()%N_RECORDS;
-	return rnd;
+  int rnd;
+  rnd = rand()%20;
+  return rnd;
 }
 
-key* search_id(int rnd){
-	FILE* fp;
-	key* k = NULL;
-	int i;
+void search_id(key** k){ //pre: N_OPER < N_RECORDS
+  FILE* fpl;
+  key* tmp = NULL;
+  int i, j, rnd;
 
-	fp = fopen("records.csv", "r");
+  fpl = fopen("records.csv", "r");
 
-	for(i = 0; i < rnd; i++){
-		k = read_record(fp);
-	}
-	fclose(fp);
-	return k;
+  for(j = 0; j < N_OPER; j++){
+  	rnd = random_generator();
+  	for(i = 0; i < rnd; i++){
+    	tmp = read_record(fpl);
+    	if(tmp->id >= N_RECORDS){
+    		fclose(fpl);
+    		fpl = fopen("records.csv", "r");
+    		tmp = read_record(fpl);
+    	}
+  	}
+  	k[j] = tmp;	
+  }
+  fclose(fpl);
 }
 
 int random_search(node* root, node* n, CompareFunc compare){
@@ -165,17 +177,25 @@ int random_search(node* root, node* n, CompareFunc compare){
 }
 
 void search_1ml_records(node* root, CompareFunc compare){
-	int i, rnd;
-	node* n;
-	key* k;
+	int i;
+  key** k;
+  node* n;
+  clock_t start, end; 
+  double t = 0;
+
+  k = (key**)malloc(sizeof(key*)*N_OPER);
+	start = clock();
+  search_id(k);
+  end = clock();
+  t = (double)(end - start)/CLOCKS_PER_SEC;
+  printf("Ho GENERATO %d chiavi casuali in %lfsec\n",N_OPER , t);
+  t = 0;
 	for(i = 0; i < N_OPER; i++){
-		rnd = random_generator();
-		k = search_id(rnd);
-		n = new_node(k);
+		n = new_node(k[i]);
 		assert(random_search(root, n, compare) == 1);
-		free(k);
 		free(n);
 	}
+	free(k);
 }
 
 void search(bin_tree* tree, char* argv){
@@ -231,17 +251,26 @@ node* random_delete(node* root, node* n, CompareFunc compare){
 }
 
 void delete_1ml_records(node* root, CompareFunc compare){
-	int i, rnd;
-	node* n;
-	key* k;
+	int i;
+  key** k;
+  node* n;
+  clock_t start, end; 
+  double t = 0;
+
+  k = (key**)malloc(sizeof(key*)*N_OPER);
+	start = clock();
+  search_id(k);
+  end = clock();
+  t = (double)(end - start)/CLOCKS_PER_SEC;
+  printf("HO GENERATO %d chiavi casuali in %lfsec\n",N_OPER , t);
+  t = 0;
 	for(i = 0; i < N_OPER; i++){
-		rnd = random_generator();
-		k = search_id(rnd);
-		n = new_node(k);
+		n = new_node(k[i]);
 		random_delete(root, n, compare);
-		free(k);
 		free(n);
 	}
+	free(k);
+
 }
 
 void delete(bin_tree* tree, char* argv){
