@@ -28,7 +28,7 @@ typedef struct lnode {
 
 typedef int (*CompareFunc)(key*, key*);
 
-void print_table(node** hash_table, char* argv);
+void print_table(node** hash_table, char* argv, int num);
 void print_list(node* n, char* argv);
 
 void print_help();
@@ -43,7 +43,7 @@ int hash(int id);
 
 key* read_record(FILE* fp);
 node* insert_list(node* n, key* k);
-int find_list(node* n, key* k, CompareFunc compare);
+node* find_list(node* n, key* k, CompareFunc compare);
 void insert_hash_table(node** hash_table, key* k, CompareFunc compare);
 void insert_file_records(node** hash_table, char* argv);
 
@@ -51,5 +51,10 @@ int random_generator();
 void search_id(key** k);
 double search_key(node** hash_table, char* argv);
 void search(node** hash_table, key* k, CompareFunc compare);
+
+double delete_key(node** hash_table, char* argv);
+void delete(node** n, key* k, CompareFunc compare);
+node* delete_node(node* n, node* tmp, CompareFunc compare);
+void unit_test();
 
 #endif

@@ -1,4 +1,5 @@
 #include "hash_table.h"
+#include "unit_test.h"
 
 int main(int argc, char* argv[]){
 	node** hash_table;
@@ -10,7 +11,7 @@ int main(int argc, char* argv[]){
 		print_help();
 	}
 
-	//unit_test();
+	unit_test();
 
 	hash_table = make_table();
 
@@ -20,17 +21,16 @@ int main(int argc, char* argv[]){
 	t = (double) (end - start)/ CLOCKS_PER_SEC;
 	printf("\nTempo totale di INSERIMENTO di %d di records: %lf sec\n\n", N_RECORDS, t);
 
-	//print_table(hash_table, argv[1]);
 
 	t = search_key(hash_table, argv[1]);
 	printf("Tempo totale netto di RICERCA di %d di records: %lf sec\n", N_OPER, t);
 
-	/*start = clock();
-	//METODO DI CANCELLAZIONE
-	end = clock();
-	t = (double) (end - start)/ CLOCKS_PER_SEC;
-	printf("\nTempo totale di CANCELLAZIONE di %d di records: %lf sec\n", N_RECORDS, t);*/
+	//print_table(hash_table, argv[1], HSIZE);
 
+	t = delete_key(hash_table, argv[1]);
+	printf("\nTempo totale di CANCELLAZIONE di %d di records: %lf sec\n", N_OPER, t);
+
+	//print_table(hash_table, argv[1], HSIZE);
 
 	free(hash_table);
 }

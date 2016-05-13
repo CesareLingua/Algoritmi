@@ -39,10 +39,10 @@ void print_help(){
 	exit(EXIT_SUCCESS);
 }
 
-void print_table(node** n, char* argv){
+void print_table(node** n, char* argv, int num){
 	int i;
 	if(N_RECORDS < 500){
-		for(i = 0; i < HSIZE; i++){
+		for(i = 0; i < num; i++){
 			if(n[i]!= NULL){
 				printf("-----------------------------------------------\n");
 				print_list(n[i], argv);
@@ -107,20 +107,20 @@ node* insert_list(node* n, key* k){
   new_node->record = k;
   new_node->next = n;
   new_node->prev = NULL;
-  if(n != NULL)       /* lista non vuota */
+  if(n != NULL)
     n->prev = new_node;
   return new_node;
 }
 
 
 
-int find_list(node* n, key* k, CompareFunc compare){
+node* find_list(node* n, key* k, CompareFunc compare){
   for(; n != NULL; n = n->next	){
    if((compare(n->record, k)) == 0){
-      return 1;
+      return n;
     }
   }
-  return -1;
+  return NULL;
 }
 
 int hash(int id){
@@ -132,7 +132,7 @@ int hash(int id){
 void insert_hash_table(node** hash_table, key* k, CompareFunc compare){
   int hash_value;
   hash_value = hash(k->id);
-  if(find_list(hash_table[hash_value], k, compare) == -1){
+  if(find_list(hash_table[hash_value], k, compare) == NULL){
    	hash_table[hash_value] = insert_list(hash_table[hash_value], k);
   }
 }
@@ -154,8 +154,7 @@ key* read_record(FILE* fp){
   	if(c != ','){
     	word[i] = c;
     	c = fgetc(fp);
-  	}
-    
+  	} 
   }
   if(fscanf(fp, "%li,%lf", &linum, &fnum) <= 0)
     perror("No number read\n");
@@ -216,7 +215,7 @@ void search_id(key** k){ //pre: N_OPER < N_RECORDS
 void search(node** hash_table, key* k, CompareFunc compare){
 	int hash_val;
 	hash_val = hash(k->id);
-	assert(find_list(hash_table[hash_val], k, compare) > 0);
+	assert(find_list(hash_table[hash_val], k, compare) != NULL);
 }
 
 double search_key(node** hash_table, char* argv){
@@ -235,7 +234,7 @@ double search_key(node** hash_table, char* argv){
   printf("HO GENERATO %d chiavi casuali in %lfsec\n",N_OPER , t);
   t = 0;
 
-  for(i = 0; i < N_OPER-1; i++){
+  for(i = 0; i < N_OPER; i++){
     
     if(strcmp(argv, "-s") == 0){
       start = clock();
@@ -257,8 +256,70 @@ double search_key(node** hash_table, char* argv){
       exit(EXIT_FAILURE);
     }
   }
-  
   free(k);
   return t;
+}
+
+node* delete_node(node* n, node* tmp, CompareFunc compare){
+   if(tmp->prev != NULL) 
+      tmp->prev->next = tmp->next;  
+    else  
+      n = tmp->next;  
+    if(tmp->next != NULL) 
+      tmp->next->prev = tmp->prev; 
+    free(tmp);
+    return n;
+}
+
+void delete(node** hash_table, key* k, CompareFunc compare){
+  int hash_val;
+  hash_val = hash(k->id);
+  node* tmp;
+  if((tmp = find_list(hash_table[hash_val], k, compare)) != NULL){
+  	hash_table[hash_val] = delete_node(hash_table[hash_val], tmp, compare);
+  }
+}
+
+double delete_key(node** hash_table, char* argv){
+  int i;
+  key** k;
+  clock_t start, end; 
+  double t = 0;
+
+  k = (key**)malloc(sizeof(key*)*N_OPER);
+
+  //genero chiavi random e le salvo nell'array k
+  start = clock();
+  search_id(k);
+  end = clock();
+  t = (double)(end - start)/CLOCKS_PER_SEC;
+  printf("\nHO GENERATO %d chiavi casuali in %lfsec\n",N_OPER , t);
+  t = 0;
+
+  for(i = 0; i < N_OPER; i++){
+    
+    if(strcmp(argv, "-s") == 0){
+      start = clock();
+      delete(hash_table, k[i], compare_string);
+      end = clock();
+      t = t + (double)(end - start)/CLOCKS_PER_SEC;
+    }else if(strcmp(argv, "-i") == 0){
+       start = clock();
+      delete(hash_table, k[i], compare_long_int);
+      end = clock();
+      t = t + (double)(end - start)/CLOCKS_PER_SEC;
+    }else if(strcmp(argv, "-f") == 0){
+       start = clock();
+      delete(hash_table, k[i], compare_double);
+      end = clock();
+      t = t + (double)(end - start)/CLOCKS_PER_SEC;
+    }else{
+      printf("ERROR: incorrect options\n");
+      exit(EXIT_FAILURE);
+    }
+  }
+  free(k);
+  return t;
+
 }
 
