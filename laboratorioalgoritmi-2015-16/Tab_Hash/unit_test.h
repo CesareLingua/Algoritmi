@@ -8,5 +8,7 @@ void unit_test();
 void insert_on_same_key();
 int find_list_test(node* n, key* k, CompareFunc compare);
 void delete_first();
+void delete_last();
+void delete_random_one();
 
 #endif

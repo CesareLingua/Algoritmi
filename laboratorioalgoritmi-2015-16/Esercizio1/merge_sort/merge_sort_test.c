@@ -187,7 +187,7 @@ int main(int argc, char const *argv[]){
   printf("Conto il numero di righe...\n");
   now = time(NULL);
   //n_records = count_records();
-  n_records = 5000000;
+  n_records = 3000000;
   m = difftime(time(NULL), now); 
   printf("	-Numero righe: %d\n", n_records );
   printf("	-Tempo impiegato = %ldsec\n", m);

@@ -1,9 +1,9 @@
 #ifndef __HASH_TABLE_H_KEIXJ4PDU3__
 #define __HASH_TABLE_H_KEIXJ4PDU3__
 
-#define N_RECORDS 20000000
-#define HSIZE 5000000
-#define N_OPER 1000000
+#define N_RECORDS 200000
+#define HSIZE 50000
+#define N_OPER 10000
 
 #include <stdio.h>
 #include <stdlib.h>

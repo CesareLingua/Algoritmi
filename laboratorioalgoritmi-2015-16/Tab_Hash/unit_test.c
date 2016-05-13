@@ -96,12 +96,75 @@ void delete_first(){
 	delete(hash_table, k[2], compare_string);
 
 	
-	assert(hash_table[2]->record->word == ""); 
+	assert(strcmp(hash_table[2]->record->word , "") == 0); 
 
+}
+void delete_last(){
+	node** hash_table;
+	long int* n_value;
+	key** k;
+	key* k1;
+	int i;
+
+	hash_table = (node**)malloc(sizeof(node*)*5);
+	n_value = (long int*)malloc(sizeof(long int)*10);
+	k = (key**)malloc(sizeof(key*)*5);
+
+	for(i = 0; i < 5; i++){
+		k1 = new_key(0, "", 0, 0);
+		hash_table[i] = new_node(k1);
+	}
+
+	n_value[0] = 21; 
+	n_value[1] = 78;
+	n_value[2] = 456;
+	n_value[3] = 3;
+	n_value[4] = 15;
+
+	for(i = 0; i < 5; i++){
+		k[i] = new_key(0, "", n_value[i], 0);
+		insert_hash_table(hash_table, k[i], compare_long_int);
+	}
+	
+	delete(hash_table, k[4], compare_long_int);
+	assert(hash_table[4]->record->linum == 0);
+}
+
+void delete_random_one(){
+	node** hash_table;
+	long int* n_value;
+	key** k;
+	key* k1;
+	int i;
+
+	hash_table = (node**)malloc(sizeof(node*)*5);
+	n_value = (long int*)malloc(sizeof(long int)*10);
+	k = (key**)malloc(sizeof(key*)*5);
+
+	for(i = 0; i < 5; i++){
+		k1 = new_key(0, "", 0, 0);
+		hash_table[i] = new_node(k1);
+	}
+
+	n_value[0] = 21; 
+	n_value[1] = 78;
+	n_value[2] = 456;
+	n_value[3] = 3;
+	n_value[4] = 15;
+
+	for(i = 0; i < 5; i++){
+		k[i] = new_key(0, "", n_value[i], 0);
+		insert_hash_table(hash_table, k[i], compare_long_int);
+	}
+
+	delete(hash_table, k[2], compare_long_int);
+	assert(hash_table[2]->record->linum == 0);	
 }
 
 void unit_test(){
 	insert_equal_element();
 	insert_on_same_key();
 	delete_first();
+	delete_last();
+	delete_random_one();
 }

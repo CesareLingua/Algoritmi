@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
 		print_help();
 	}
 
-	unit_test();
+	//unit_test();
 
 	hash_table = make_table();
 

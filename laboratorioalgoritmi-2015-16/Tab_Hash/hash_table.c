@@ -143,7 +143,7 @@ key* read_record(FILE* fp){
   long int linum = 0;
   double fnum = 0;
   char* word = NULL;
-  word = (char*)malloc(sizeof(char)*20);
+  word = (char*)malloc(sizeof(char)*50);
 
   char c = '\0';
   if(fscanf(fp, "%d,", &id) <= 0)
@@ -167,7 +167,11 @@ void insert_file_records(node** hash_table, char* argv){
   FILE* fp;
   key* k;
 
-  fp = fopen("records.csv", "r");
+  if((fp = fopen("records.csv", "r"))== NULL){
+    printf("No such file or directory\n");
+    exit(EXIT_FAILURE);
+  }
+
   for(i = 0; i < N_RECORDS; i++){
     k = read_record(fp);
     if(strcmp(argv, "-s") == 0){
