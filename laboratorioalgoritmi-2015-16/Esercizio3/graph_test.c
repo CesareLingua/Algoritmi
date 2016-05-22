@@ -1,19 +1,17 @@
 #include "graph.h"
 
 int main(int argc, char*argv[]){
-	node** graph;
+	vertex** graph;
+	double t;
 	
-
-	if(strcmp(argv[1], "--help") == 0){
+	/*if(strcmp(argv[1], "--help") == 0){
 		print_help();
-	}
+	}*/
 
-	graph = make_table();
+	graph = make_graph();
+	t = fill(graph);
+	printf("Tempo costruzione grafo: %lf\n",t);
 
-	//read_records(graph, argv[1]);
-
-	fill(graph);
-	
-	
-
+	dfs(graph);
+	print_graph(graph);
 }

@@ -7,28 +7,67 @@
 #include <time.h>
 #include <assert.h>
 #include <unistd.h>
-#define HSIZE 20000 
+#include <errno.h>
+#include <limits.h>
 
-typedef struct key_frame{
-	char* city;	
-	double km;								
- }key;
+#define MAX_VERTEX 50000
+#define INF INT_MAX/2;
 
- typedef struct lnode { 		
- 	key* record;					
-	struct lnode *next;		
- 	struct lnode *prev; 	
-}node;
+int n_vertex;
 
-key* new_key(char* c, double km);
+typedef enum ecolor{white, gray, black}color;
 
-node* new_node(key* k, node* next, node* prev);
+typedef struct svisit{
+	color color;
+	int d;
+	int f;
+}visit;
 
-node** make_graph(node** graph);
+typedef struct sadj { 		
+ 	char* city;
+ 	double km;	
+ 	visit* dfs;
+ 	struct svertex* v_pi;
+ 	struct svertex* org_v; //puntatore al vertice originale nell'array 			
+	struct sadj* next;	
+	struct sadj* prev;	
+}adj;
 
-int charValue(char c);
 
-int hash(char* w);
+typedef struct svertex{
+	visit* dfs;
+	char* city;
+	adj* first;
+	adj* last;
+}vertex;
 
-void read_record();
+vertex** make_graph();
+
+double fill(vertex** g);
+
+void read_record(vertex** g, FILE* fp);
+
+char* read_city(FILE* fp);
+
+adj* make_adj(char* c, double km);
+
+void enqueue(vertex* g, adj* a);
+
+void print_list(adj* adj);
+
+void print_graph(vertex** g);
+
+void adj_org_vertex(vertex** graph, vertex* g);
+
+void dfs(vertex** g);
+
+int dfs_visit(vertex** g, vertex* u, int visit_t);
+
+void make_adj_dfs(adj* n);
+
+vertex* make_dfs(vertex** graph, vertex* g);
+
+int search_vertex(vertex** g, char* city);
+
+#endif
 
