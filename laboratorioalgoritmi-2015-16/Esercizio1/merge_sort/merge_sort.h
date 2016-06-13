@@ -5,7 +5,7 @@ typedef int (*CompareFunc)(void*, void*);
 
 /*
  * Implementa l'algoritmo di ordinamento Merge Sort
- * array: array da ordinare 
+ * array: array da ordinare
  * left: primo elemento dell'array
  * right: ultimo elemento dell'array
  */
