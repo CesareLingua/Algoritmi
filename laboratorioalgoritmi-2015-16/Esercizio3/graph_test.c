@@ -1,17 +1,18 @@
 #include "graph.h"
+#include "heap.h"
 
 int main(int argc, char*argv[]){
 	vertex** graph;
 	double t;
-	
-	/*if(strcmp(argv[1], "--help") == 0){
-		print_help();
-	}*/
 
+	printf("Costruisco grafo...");
 	graph = make_graph();
 	t = fill(graph);
-	printf("Tempo costruzione grafo: %lf\n",t);
+	printf("    %lf sec\n",t);
+	
+	strongly_connected_components(graph);
 
-	dfs(graph);
-	print_graph(graph);
+
+	//print_graph(graph);
+	//print_graph(tgraph);	
 }
